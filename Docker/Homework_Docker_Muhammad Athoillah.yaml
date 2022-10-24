@@ -1,0 +1,28 @@
+# Terdiri dari minimal 1 zookeeper dan 1 kafka. 
+# Versi kafka yang diinginkan tidak lebih dari 2.0.0 (kafka < 2.0)
+# Baik kafka dan zookeeper dapat diakses melalui port 2181 dan 9092 dari jaringan lokal
+# port kafka = 2181, port zookeeper = 9092
+
+version: "2"
+
+services:
+    zookeeper:
+        container_name: zookeeper
+        image: docker.io/bitnami/zookeeper:3.6.3
+        ports:
+            - "9092:9092"
+        environment:
+            - ALLOW_ANONYMOUS_LOGIN=yes
+    kafka:
+        container_name: kafka1
+        image: docker.io/bitnami/kafka:1.1.0
+        ports:
+            - "2181:2181"
+        environment:
+            - KAFKA_BROKER_ID=1
+            - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:9092
+            - ALLOW_PLAINTEXT_LISTENER=yes
+            - KAFKA_CFG_LISTENERS=PLAINTEXT://:2181
+            - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:2181
+        depends_on:
+            - zookeeper
